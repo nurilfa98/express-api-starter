@@ -1,4 +1,4 @@
-const db = require("@db");
+const db = require("@config/db");
 
 const findAll = () => {
     return db.execute("SELECT * FROM users");
@@ -8,15 +8,15 @@ const findOne = (id) => {
     return db.execute("SELECT * FROM users WHERE id = ?", [id]);
 };
 
-const findByUsername = async (username) => {
-    const SQLQuery = "SELECT * FROM users WHERE username = ?";
-    const [rows] = await db.execute(SQLQuery, [username]);
+const findByUsernameOrEmail = async (username, email) => {
+    const SQLQuery = "SELECT * FROM users WHERE username = ? OR email = ?";
+    const [rows] = await db.execute(SQLQuery, [username, email]);
     return rows.length > 0 ? rows[0] : null;
 };
 
 const create = (data) => {
-    SQLQuery = "INSERT INTO users (username, password) VALUES (?, ?)";
-    return db.execute(SQLQuery, [data.username, data.password]);
+    SQLQuery = "INSERT INTO users (email, username, password, role) VALUES (?, ?, ?, ?)";
+    return db.execute(SQLQuery, [data.email, data.username, data.password, data.role]);
 };
 
 const update = (id, data) => {
@@ -40,7 +40,7 @@ const userModel = {
     create,
     update,
     remove,
-    findByUsername,
+    findByUsernameOrEmail,
 };
 
 module.exports = userModel;

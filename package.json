@@ -1,7 +1,7 @@
 {
-    "name": "expense-notes",
+    "name": "express-mvc-starter",
     "version": "1.0.0",
-    "description": "web app for expense notes",
+    "description": "Express.js MVC starter template with authentication (JWT & Middleware), public/private API routes, and full-stack web capabilities.",
     "main": "app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,20 +16,24 @@
         "cors": "^2.8.5",
         "dotenv": "^16.5.0",
         "express": "^5.1.0",
-        "express-validator": "^7.2.1",
         "jsonwebtoken": "^9.0.2",
         "module-alias": "^2.2.3",
-        "morgan": "^1.10.0",
         "mysql2": "^3.14.1",
-        "redis": "^5.5.6"
+        "redis": "^5.5.6",
+        "zod": "^4.6.5"
     },
     "devDependencies": {
         "nodemon": "^3.1.10"
     },
     "_moduleAliases": {
-        "@controllers": "controllers",
-        "@models": "models",
         "@routes": "routes",
-        "@db": "db"
+        "@models": "models",
+        "@views": "views",
+        "@controllers": "controllers",
+        "@middlewares": "middlewares",
+        "@static": "static",
+        "@utils": "utils",
+        "@schemas": "schemas",
+        "@config": "config"
     }
 }

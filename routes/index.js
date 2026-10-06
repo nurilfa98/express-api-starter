@@ -1,19 +1,17 @@
 const express = require("express");
 
 // import controller
-const userController = require("../controllers/user.controller");
-const {
-    validateCreateUser,
-    validateUpdateUser,
-} = require("../validators/user.validator");
+const userController = require("@controllers/user.controller");
+const validate = require("@middlewares/validate");
+const { createUserSchema } = require("@schemas/user.schema");
 
 // router setup
 const router = express.Router();
 
 router.get("/users", userController.getAllUsers);
 router.get("/users/:id", userController.getUsersById);
-router.post("/users", validateCreateUser, userController.createUser);
-router.patch("/users/:id", validateUpdateUser, userController.updateUser);
+router.post("/users", validate(createUserSchema), userController.createUser);
+router.patch("/users/:id", validate(createUserSchema), userController.updateUser);
 router.delete("/users/:id", userController.deleteUser);
 
 router.get("/expenses", (req, res) => {

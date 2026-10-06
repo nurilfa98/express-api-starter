@@ -7,7 +7,11 @@ const redisClient = createClient({
 redisClient.on("error", (err) => console.log("Redis Client Error", err));
 
 (async () => {
-    await redisClient.connect();
+    try {
+        await redisClient.connect();
+    } catch (err) {
+        console.error("Gagal terhubung ke Redis:", err.message);
+    }
 })();
 
 module.exports = redisClient;

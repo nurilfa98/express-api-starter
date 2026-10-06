@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "paths": {
+            "@routes/*": ["./routes/*"],
+            "@models/*": ["./models/*"],
+            "@views/*": ["./views/*"],
+            "@controllers/*": ["./controllers/*"],
+            "@middlewares/*": ["./middlewares/*"],
+            "@schemas/*": ["./schemas/*"],
+            "@static/*": ["./static/*"],
+            "@config/*": ["./config/*"],
+            "@utils/*": ["./utils/*"]
+        }
+    },
+    "exclude": ["node_modules"]
+}

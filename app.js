@@ -5,10 +5,10 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const port = process.env.PORT || 8000;
-const middlewareRequest = require("./middlewares/logger");
-const authMiddleware = require("./middlewares/auth");
-const allRouter = require("./routes");
-const authRouter = require("./routes/auth");
+const middlewareRequest = require("@middlewares/logger");
+const authMiddleware = require("@middlewares/auth");
+const allRouter = require("@routes");
+const authRouter = require("@routes/auth");
 
 // izinkan semua origin
 app.use(
@@ -19,8 +19,6 @@ app.use(
 
 // mencatat informasi request ke server
 app.use(middlewareRequest);
-// const morgan = require("morgan");
-// app.use(morgan("short"));
 
 // agar express bisa membaca req.body
 app.use(express.json());
@@ -40,5 +38,5 @@ app.use(authMiddleware);
 app.use("/api", allRouter);
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`Express app listening at http://127.0.0.1:${port}`);
 });

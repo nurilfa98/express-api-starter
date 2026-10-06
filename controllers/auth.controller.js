@@ -1,22 +1,31 @@
-const userModel = require("../models/user.model");
+const userModel = require("@models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { JWT_SECRET, JWT_EXPIRES_IN } = require("../static/jwt");
-const redisClient = require("../lib/redis-client");
+const { JWT_SECRET, JWT_EXPIRES_IN } = require("@static/jwt");
+const redisClient = require("@config/redis");
+const { ROLE } = require("@static/roles.static");
 
 const register = async (req, res) => {
     const body = req.body;
-
+    const isSuperAdmin = body.role === "superadmin";
+    console.log("body: ", body.role);
+    console.log("superadmin: ", isSuperAdmin);
+    
     try {
-        const user = await userModel.findByUsername(body.username);
+        const user = await userModel.findByUsernameOrEmail(body.username, body.email);
         if (user) {
-            res.status(400).json({ message: "Username already exist" });
+            return res.status(400).json({ message: "Username or email already exist" });
         }
         const hashPassword = await bcrypt.hash(body.password, 10);
         const data = {
+            email: body.email,
             username: body.username,
             password: hashPassword,
+            role: isSuperAdmin ? ROLE.SUPERADMIN : ROLE.USER
         };
+
+        console.log("data: ", data);
+
         await userModel.create(data);
         res.json({ message: "Register success" });
     } catch (error) {
@@ -34,7 +43,7 @@ const login = async (req, res) => {
         // check user
         const user = await userModel.findByUsername(body.username);
         if (!user) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "You don't have an account yet, register first!",
             });
         }
@@ -42,7 +51,7 @@ const login = async (req, res) => {
         // check password
         const isValid = bcrypt.compareSync(body.password, user.password);
         if (!isValid) {
-            res.status(400).json({ message: "Password is incorrect" });
+            return res.status(400).json({ message: "Password is incorrect" });
         }
 
         // create token
@@ -96,4 +105,4 @@ const logout = async (req, res) => {
     }
 };
 
-module.exports = { register, login };
+module.exports = { register, login, logout };
