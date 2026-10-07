@@ -14,6 +14,12 @@ const findByUsernameOrEmail = async (username, email) => {
     return rows.length > 0 ? rows[0] : null;
 };
 
+const findByUsername = async (username) => {
+    const SQLQuery = "SELECT * FROM users WHERE username = ?";
+    const [rows] = await db.execute(SQLQuery, [username]);
+    return rows.length > 0 ? rows[0] : null;
+};
+
 const create = (data) => {
     SQLQuery = "INSERT INTO users (email, username, password, role) VALUES (?, ?, ?, ?)";
     return db.execute(SQLQuery, [data.email, data.username, data.password, data.role]);
@@ -41,6 +47,7 @@ const userModel = {
     update,
     remove,
     findByUsernameOrEmail,
+    findByUsername
 };
 
 module.exports = userModel;

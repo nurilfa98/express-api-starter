@@ -3,13 +3,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { JWT_SECRET, JWT_EXPIRES_IN } = require("@static/jwt");
 const redisClient = require("@config/redis");
-const { ROLE } = require("@static/roles.static");
+const { ROLE } = require("@static/roles");
 
 const register = async (req, res) => {
     const body = req.body;
     const isSuperAdmin = body.role === "superadmin";
-    console.log("body: ", body.role);
-    console.log("superadmin: ", isSuperAdmin);
     
     try {
         const user = await userModel.findByUsernameOrEmail(body.username, body.email);
@@ -23,9 +21,6 @@ const register = async (req, res) => {
             password: hashPassword,
             role: isSuperAdmin ? ROLE.SUPERADMIN : ROLE.USER
         };
-
-        console.log("data: ", data);
-
         await userModel.create(data);
         res.json({ message: "Register success" });
     } catch (error) {
@@ -40,25 +35,25 @@ const login = async (req, res) => {
     const body = req.body;
 
     try {
-        // check user
         const user = await userModel.findByUsername(body.username);
+        
         if (!user) {
             return res.status(400).json({
                 message: "You don't have an account yet, register first!",
             });
         }
 
-        // check password
         const isValid = bcrypt.compareSync(body.password, user.password);
         if (!isValid) {
             return res.status(400).json({ message: "Password is incorrect" });
         }
 
-        // create token
+        // create token jwt
         const token = jwt.sign(
             {
                 id: user.id,
                 username: user.username,
+                email: user.email
             },
             JWT_SECRET,
             {
@@ -66,7 +61,15 @@ const login = async (req, res) => {
             }
         );
 
-        res.json({ message: "Login success", token });
+        res.json({ 
+            message: "Login success", 
+            data: {
+                id: user.id,
+                username: user.username,
+                email: user.email
+            },
+            access_token: token 
+        });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -86,21 +89,15 @@ const logout = async (req, res) => {
     try {
         const decode = jwt.verify(token, JWT_SECRET);
         const exp = decode.exp;
-        const ttl = exp - Math.floor(Date.now() / 1000); // time to live
+        const ttl = exp - Math.floor(Date.now() / 1000); // Time To Live
 
-        // save to redis
-        const blacklistedToken = await redisClient.set(
-            `blacklist_${token}`,
-            token,
-            {
-                expiration: "EX", // pakai ttl dalam detik
-                value: ttl, // TTL-nya berapa detik
-                condition: "NX", // hanya di set kalau key belum ada
-            }
-        );
+        if (ttl > 0) {
+            await redisClient.setEx(`blacklist_${token}`, ttl, "true");
+        }
 
         res.json({ message: "Logout success" });
     } catch (error) {
+        console.log("=== Error: ", error);
         res.status(401).json({ message: "Invalid token during logout" });
     }
 };
