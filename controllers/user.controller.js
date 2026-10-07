@@ -15,13 +15,13 @@ const getAllUsers = async (req, res) => {
 const getUsersById = async (req, res) => {
     try {
         const id = req.params.id;
-        const [data] = await userModel.findOne(id);
-        if (data.length < 1) {
+        const data = await userModel.findOne(id);
+        if (!data) {
             res.status(404).json({ message: "User not found" });
         }
         res.json({
             message: "Users detail retrieved successfully",
-            data: data[0],
+            data
         });
     } catch (error) {
         res.status(500).json({
@@ -31,32 +31,18 @@ const getUsersById = async (req, res) => {
     }
 };
 
-const createUser = async (req, res) => {
-    try {
-        const body = req.body;
-        await userModel.create(body);
-        res.status(201).json({ message: "Users created successfully" });
-    } catch (error) {
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
-    }
-};
-
-const updateUser = async (req, res) => {
+const deactiveUser = async (req, res) => {
     try {
         const id = req.params.id;
-        const body = req.body;
-
         if (!id) {
-            res.status(400).json({ message: "param id is required" });
+            return res.status(400).json({ message: "param id is required" });
         }
-        if (Object.keys(body).length < 1) {
-            res.status(400).json({ message: "Please provide data" });
+        const user = await userModel.findOne(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
-        await userModel.update(id, body);
-        res.json({ message: "Users updated successfully" });
+        await userModel.deactiveUser(id);
+        res.json({ message: "User deactivate successfully" });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -69,10 +55,16 @@ const deleteUser = async (req, res) => {
     try {
         const id = req.params.id;
         if (!id) {
-            res.status(400).json({ message: "param id is required" });
+            return res.status(400).json({ message: "param id is required" });
         }
+
+        const user = await userModel.findOne(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
         await userModel.remove(id);
-        res.json({ message: "Users deleted successfully" });
+        res.json({ message: "User deleted successfully" });
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -84,7 +76,6 @@ const deleteUser = async (req, res) => {
 module.exports = {
     getAllUsers,
     getUsersById,
-    createUser,
-    updateUser,
+    deactiveUser,
     deleteUser,
 };
