@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("@static/jwt");
+const { JWT_SECRET } = require("@config/jwt");
 const redisClient = require("@config/redis");
 
 const authMiddleware = async (req, res, next) => {

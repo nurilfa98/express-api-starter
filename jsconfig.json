@@ -1,15 +1,15 @@
 {
     "compilerOptions": {
         "paths": {
-            "@routes/*": ["./routes/*"],
-            "@models/*": ["./models/*"],
-            "@views/*": ["./views/*"],
-            "@controllers/*": ["./controllers/*"],
-            "@middlewares/*": ["./middlewares/*"],
-            "@schemas/*": ["./schemas/*"],
-            "@static/*": ["./static/*"],
-            "@config/*": ["./config/*"],
-            "@utils/*": ["./utils/*"]
+            "@routes/*": ["./src/routes/*"],
+            "@models/*": ["./src/models/*"],
+            "@controllers/*": ["./src/controllers/*"],
+            "@middlewares/*": ["./src/middlewares/*"],
+            "@constants/*": ["./src/constants/*"],
+            "@utils/*": ["./src/utils/*"],
+            "@schemas/*": ["./src/schemas/*"],
+            "@services/*": ["./src/services/*"],
+            "@config/*": ["./src/config/*"]
         }
     },
     "exclude": ["node_modules"]
