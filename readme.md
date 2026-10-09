@@ -4,6 +4,10 @@
 -   pnpm i
 -   pnpm dev
 
+## Techstack
+-   nodejs v16.20
+-   pnpm v7.14
+
 ## Biasakan membuat setting lokal vscode dengan cara
 
 1. create folder .vscode

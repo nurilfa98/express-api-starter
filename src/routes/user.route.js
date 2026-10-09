@@ -5,6 +5,6 @@ const userController = require("@controllers/user.controller");
 router.get("/", userController.getAllUsers);
 router.get("/:id", userController.getUsersById);
 router.patch("/deactive-user/:id", userController.deactiveUser);
-router.delete("/:id", userController.deleteUser);
+router.delete("/:id", userController.removeUser);
 
 module.exports = router;
