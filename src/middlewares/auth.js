@@ -1,12 +1,13 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("@config/jwt");
 const redisClient = require("@config/redis");
+const { UnauthorizedException } = require("@utils/exception-handler");
 
 const authMiddleware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({ message: "Invalid token" });
+        throw new UnauthorizedException("Invalid token format");
     }
 
     const token = authHeader.split(" ")[1];
@@ -14,7 +15,7 @@ const authMiddleware = async (req, res, next) => {
     // cek token blacklist
     const isBlacklist = await redisClient.get(`blacklist_${token}`);
     if (isBlacklist) {
-        return res.status(401).json({ message: "Token is blacklisted" });
+        throw new UnauthorizedException("Token is blacklisted");
     }
 
     try {
@@ -25,7 +26,7 @@ const authMiddleware = async (req, res, next) => {
         next();
     } catch (error) {
         console.log("=== Error: ", error);
-        res.status(401).json({ message: "Invalid token" });
+        throw new UnauthorizedException(error.message);
     }
 };
 

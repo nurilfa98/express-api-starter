@@ -1,3 +1,9 @@
+## Running this App
+-   execute query-table.sql
+-   setup file .env
+-   pnpm i
+-   pnpm dev
+
 ## Biasakan membuat setting lokal vscode dengan cara
 
 1. create folder .vscode

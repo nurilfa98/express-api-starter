@@ -5,6 +5,7 @@ class ResponseHandler {
         statusCode = 200 
     } = {}) {
         return res.status(statusCode).json({
+            success: true,
             message,
             ...(data !== null && { data }),
         });

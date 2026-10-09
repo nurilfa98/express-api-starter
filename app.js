@@ -8,7 +8,6 @@ const port = process.env.PORT || 8000;
 const middlewareRequest = require("@middlewares/logger");
 const allRoutes = require("@routes/index");
 const errorHandler = require('@middlewares/error-handler');
-const responseHandler = require('@middlewares/response-handler');
 
 // izinkan semua origin
 app.use(
@@ -22,9 +21,6 @@ app.use(express.json());
 
 // mencatat informasi request ke server
 app.use(middlewareRequest);
-
-// menangani response global, di controller tinggal panggil res.success | res.created
-app.use(responseHandler);
 
 // default route
 app.get("/", (req, res) => {

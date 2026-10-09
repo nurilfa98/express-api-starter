@@ -1,33 +1,24 @@
+const ResponseHandler = require("@utils/response-handler");
 const userModel = require("../models/user.model");
+const userService = require("@services/user.service")
 
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res, next) => {
     try {
-        const [data] = await userModel.findAll();
-        res.json({ message: "Users retrieved successfully", data });
+        const data = await userService.findAll();
+        return ResponseHandler.success(res, { data });
     } catch (error) {
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
-const getUsersById = async (req, res) => {
+const getUsersById = async (req, res, next) => {
     try {
         const id = req.params.id;
-        const data = await userModel.findOne(id);
-        if (!data) {
-            res.status(404).json({ message: "User not found" });
-        }
-        res.json({
-            message: "Users detail retrieved successfully",
-            data
-        });
+        const data = await userService.findOne(id);
+        
+        return ResponseHandler.success(res, { data });
     } catch (error) {
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
@@ -51,25 +42,13 @@ const deactiveUser = async (req, res) => {
     }
 };
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
     try {
         const id = req.params.id;
-        if (!id) {
-            return res.status(400).json({ message: "param id is required" });
-        }
-
-        const user = await userModel.findOne(id);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        await userModel.remove(id);
-        res.json({ message: "User deleted successfully" });
+        const data = await userService.remove(id);
+        return ResponseHandler.success(res, { data, message: "User deleted successfully" });
     } catch (error) {
-        res.status(500).json({
-            message: "Internal server error",
-            error: error.message,
-        });
+        next(error);
     }
 };
 

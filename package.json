@@ -1,7 +1,7 @@
 {
-    "name": "express-mvc-starter",
+    "name": "express-api-starter",
     "version": "1.0.0",
-    "description": "Express.js MVC starter template with authentication (JWT & Middleware), public/private API routes, and full-stack web capabilities.",
+    "description": "Boilerplate REST API Express.js yang modular dan siap pakai untuk produksi, dilengkapi penanganan error global terpusat (exception management), serta penerapan pola clean architecture.",
     "main": "app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
